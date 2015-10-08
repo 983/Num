@@ -26,3 +26,5 @@ std::vector<char> c;
 a.print(c, 2);
 puts(&c[0]); // 10100111001
 ```
+
+For more examples, e.g. calculating digits of `Pi` and `e`, see `tests.cpp`.
