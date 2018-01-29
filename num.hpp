@@ -97,15 +97,18 @@ public:
     Num(int i): neg(i < 0){
         for (unsigned u = std::abs(i); u;){
             push_back(u);
+            // carefully shift 'u' bit-by-bit because u >>= 32 might be undefined
             for (size_t j = 0; j < word_bits(); j++) u >>= 1;
         }
     }
 
     Num(const char *c, word base = 10, char **endptr = NULL): neg(false){
+        // read sign
         if (*c == '-'){
             c++;
             neg = true;
         }
+        // read digits
         for (;*c; c++){
             mul_word(base);
             word b = char_to_word(*c);
@@ -572,6 +575,21 @@ public:
         double d = 0.0, base = ::pow(2.0, word_bits());
         for (size_t i = size(); i --> 0;) d = d * base + (*this)[i];
         return neg ? -d : d;
+    }
+    
+    bool can_convert_to_int(int *result){
+        if (*this < Num(INT_MIN) || *this > Num(INT_MAX)) return false;
+        
+        unsigned temp = 0;
+        
+        for (size_t i = words.size(); i --> 0;){
+            temp <<= word_bits();
+            temp += (*this)[i];
+        }
+        
+        *result = neg ? -temp : temp;
+        
+        return true;
     }
 
     Num pow(size_t exponent) const {
