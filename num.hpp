@@ -447,7 +447,12 @@ public:
         if (a.size() == 0) return b0;
         if (b.size() == 0) return a0;
 
-        size_t n = std::min(a.count_trailing_zeros(), b.count_trailing_zeros());
+        size_t n = a.count_trailing_zeros();
+        size_t m = b.count_trailing_zeros();
+        if (n > m) {
+            std::swap(n, m);
+            a.words.swap(b.words);
+        }
 
         a >>= n;
         b >>= n;
