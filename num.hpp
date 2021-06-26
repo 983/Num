@@ -7,6 +7,12 @@
 #include <vector>
 #include <algorithm>
 
+// Fix for Issue #5
+#ifdef _WIN32
+#undef max
+#endif
+
+
 class Num {
 public:
     typedef uint64_t word;
