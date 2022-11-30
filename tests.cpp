@@ -61,27 +61,46 @@ Rat calculate_e(int iterations = 10){
     return (result.inv() + 1).inv()*2 + 1;
 }
 
-void test_int_conversion(){ 
+void test_int_conversion(){
     for (int i = 1; i <= 1024; i++){
         int result = 666;
-        
+
         assert(!(Num(INT_MAX) + i).can_convert_to_int(&result));
         assert(!(Num(INT_MIN) - i).can_convert_to_int(&result));
-        
+
         assert((Num(INT_MAX) - i).can_convert_to_int(&result) && (INT_MAX - i) == result);
         assert((Num(INT_MIN) + i).can_convert_to_int(&result) && (INT_MIN + i) == result);
-        
+
         assert(Num(i).can_convert_to_int(&result) && result == i);
         assert(Num(-i).can_convert_to_int(&result) && result == -i);
     }
-    
+
     int result = 666;
     assert(Num(0).can_convert_to_int(&result) && result == 0);
+    assert(Num(INT_MAX).can_convert_to_int(&result) && result == INT_MAX);
+    assert(Num(INT_MIN).can_convert_to_int(&result) && result == INT_MIN);
+}
+
+void test_leading_zeros(){
+    // Tests for https://github.com/983/Num/issues/3
+    Num::word a_words[3] = {6 * 7, 0, 0};
+    Num::word b_words[3] = {6, 0, 0};
+
+    Num a(a_words, a_words + 3);
+    Num b(b_words, b_words + 3);
+
+    assert(a / b == 7);
+
+    a = Num("0000000000000000000000000000000013489961122943955613306345758787541999851062335863782808385326197845909249632");
+    b = Num("0000000000000000000000000280032787018263786953141954571555252043");
+    Num c("48172791716936124370501454722037223916");
+    assert(a / b == c);
 }
 
 int main(){
     test_int_conversion();
-    
+    test_leading_zeros();
+
     Num pi = calculate_pi(1000);
     assert(pi == "31415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679821480865132823066470938446095505822317253594081284811174502841027019385211055596446229489549303819644288109756659334461284756482337867831652712019091456485669234603486104543266482133936072602491412737245870066063155881748815209209628292540917153643678925903600113305305488204665213841469519415116094330572703657595919530921861173819326117931051185480744623799627495673518857527248912279381830119491298336733624406566430860213949463952247371907021798609437027705392171762931767523846748184676694051320005681271452635608277857713427577896091736371787214684409012249534301465495853710507922796892589235420199561121290219608640344181598136297747713099605187072113499999983729780499510597317328160963185950244594553469083026425223082533446850352619311881710100031378387528865875332083814206171776691473035982534904287554687311595628638823537875937519577818577805321712268066130019278766111959092164201989");
 
@@ -147,6 +166,6 @@ int main(){
         assert(c[m/2] == Num::word_mask() - 1);
         for (size_t i = m/2 + 1; i < m; i++) assert(c[i] == Num::word_mask());
     }
-    
+
     return 0;
 }
