@@ -96,10 +96,11 @@ public:
     }
 
     Num(int i): neg(i < 0){
-        for (unsigned u = std::abs(i); u;){
-            push_back(u);
-            // carefully shift 'u' bit-by-bit because u >>= 32 might be undefined
-            for (size_t j = 0; j < word_bits(); j++) u >>= 1;
+        unsigned u = (i < 0) ? -(unsigned)i : (unsigned)i;
+        if (sizeof(u) <= word_bits()){
+            if (u > 0) push_back(u);
+        }else{
+            for (; u; u >>= word_bits()) push_back(u);
         }
     }
 
