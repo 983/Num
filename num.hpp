@@ -595,9 +595,15 @@ public:
 
         unsigned temp = 0;
 
-        for (size_t i = words.size(); i --> 0;){
-            temp <<= word_bits();
-            temp += (*this)[i];
+        if (word_bits() >= sizeof(temp)*CHAR_BIT){
+            if (words.size() > 0){
+                temp = (*this)[0];
+            }
+        }else{
+            for (size_t i = words.size(); i --> 0;){
+                temp <<= word_bits();
+                temp += (*this)[i];
+            }
         }
 
         *result = neg ? -temp : temp;
