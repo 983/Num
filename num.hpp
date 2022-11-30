@@ -82,7 +82,9 @@ public:
 
     Num(size_t n, word w, bool neg = false): words(n, w), neg(neg){}
 
-    Num(const word *a, const word *b, bool neg = false) : words(a, b), neg(neg){}
+    Num(const word *a, const word *b, bool neg = false) : words(a, b), neg(neg){
+        truncate();
+    }
 
     Num(const Num &a){
         words = a.words;
