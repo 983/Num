@@ -6,6 +6,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <iostream>
 
 class Num {
 public:
@@ -575,25 +576,32 @@ public:
         text.push_back('\0');
     }
 
+    friend std::ostream& operator << (std::ostream& out, const Num &num){
+        std::vector<char> tmp;
+        num.print(tmp);
+        out << &tmp[0];
+        return out;
+    }
+
     double to_double() const {
         if (size() == 0) return 0.0;
         double d = 0.0, base = ::pow(2.0, word_bits());
         for (size_t i = size(); i --> 0;) d = d * base + (*this)[i];
         return neg ? -d : d;
     }
-    
+
     bool can_convert_to_int(int *result){
         if (*this < Num(INT_MIN) || *this > Num(INT_MAX)) return false;
-        
+
         unsigned temp = 0;
-        
+
         for (size_t i = words.size(); i --> 0;){
             temp <<= word_bits();
             temp += (*this)[i];
         }
-        
+
         *result = neg ? -temp : temp;
-        
+
         return true;
     }
 
