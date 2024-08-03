@@ -97,6 +97,27 @@ void test_leading_zeros(){
     assert(a / b == c);
 }
 
+void test_comparison(){
+    int r = 5;
+    for (int a = -r; a <= r; a++){
+        for (int b = -r; b <= r; b++){
+            if (b == 0) continue;
+            for (int c = -r; c <= r; c++){
+                for (int d = -r; d <= r; d++){
+                    if (d == 0) continue;
+                    const auto ab = Rat(a, b);
+                    const auto cd = Rat(c, d);
+
+                    bool expected = (a / (double) b) > (c / (double) d);
+                    bool actual = ab > cd;
+
+                    assert(expected == actual);
+                }
+            }
+        }
+    }
+}
+
 int main(){
     test_int_conversion();
     test_leading_zeros();
@@ -166,6 +187,8 @@ int main(){
         assert(c[m/2] == Num::word_mask() - 1);
         for (size_t i = m/2 + 1; i < m; i++) assert(c[i] == Num::word_mask());
     }
+
+    test_comparison();
 
     return 0;
 }

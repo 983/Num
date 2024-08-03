@@ -45,7 +45,8 @@ struct Rat {
 
     static int cmp(const Rat &a, const Rat &b){
         int result = Num::cmp(a.num * b.den, b.num * a.den);
-        return b.den != a.den ? -result : result;
+        bool different_sign = (a.den < 0) != (b.den < 0);
+        return different_sign ? -result : result;
     }
 
     double to_double() const {
